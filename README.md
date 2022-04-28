@@ -1,29 +1,24 @@
 Zabbix-NUT-Template
 ===================
 
-Zabbix Template for NUT(Network UPS Tools)
+Zabbix Template for NUT(Network UPS Tools) for current Zabbix Versions.
 
 Supported UPS: http://www.networkupstools.org/stable-hcl.html
 
+Due to changes how Zabbix handles Value mappings the old Template was broken, i was able to fix it with some work for my new 6.0 installation, hope this will help others getting up and running quick :)
 
-# Value mapping
 
-Value mapping must be done before importing template. It can done in **Administration** / **General** / **Value mapping** (combobox on right side)
+# Installation
 
-Then **Create value map**
+```
+git clone https://github.com/delin/Zabbix-NUT-Template.git
+cd Zabbix-NUT-Template
+sudo cp -r sh/ /etc/zabbix/
+sudo cp zabbix_agentd.d/userparameter_nut.conf /etc/zabbix/zabbix_agentd.conf.d/
+sudo service zabbix-agent restart
+sudo service zabbix-server restart
+```
 
-	0  - unknown state
-	1  - On line (mains is present)
-	2  - On battery (mains is not present)
-	3  - Low battery
-	4  - The battery needs to be replaced
-	5  - The battery is charging
-	6  - The battery is discharging (inverter is providing load power)
-	7  - UPS bypass circuit is active echo no battery protection is available
-	8  - UPS is currently performing runtime calibration (on battery)
-	9  - UPS is offline and is not supplying power to the load
-	10 - UPS is overloaded
-	11 - UPS is trimming incoming voltage (called "buck" in some hardware)
-	12 - UPS is boosting incoming voltage
+After that login to Zabbix, go to Config->Templates and import the Templatefile.
 
-![Value mapping](https://raw.githubusercontent.com/blondak/Zabbix-NUT-Template/master/Configuration%20of%20value%20mapping.png)
+Then you just add the Template to the Host that have a NUT installation running on them.
