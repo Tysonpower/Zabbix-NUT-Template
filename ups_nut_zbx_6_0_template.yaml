@@ -1,0 +1,288 @@
+zabbix_export:
+  version: '6.0'
+  date: '2022-04-28T07:03:55Z'
+  groups:
+    -
+      uuid: 0e60ac85bc3941e2a1d66a048ff164da
+      name: UPS
+  templates:
+    -
+      uuid: 0e60ac85bc3941e2a1d66a048ff164da
+      template: UPS
+      name: UPS
+      groups:
+        -
+          name: UPS
+      discovery_rules:
+        -
+          uuid: ea9540de8a82438688879c8ccdac8b90
+          name: 'UPS Discovery'
+          key: 'upsmon[ups.discovery]'
+          delay: '30'
+          item_prototypes:
+            -
+              uuid: 6026f414c2434104a98376d2edbbd9de
+              name: 'UPS {#UPSNAME} Charge'
+              key: 'upsmon[{#UPSNAME},battery.charge]'
+              delay: '10'
+              units: '%'
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+              trigger_prototypes:
+                -
+                  uuid: 7cf0bc49cac7455a9ed7849ac55d8556
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},battery.charge])<40'
+                  name: 'UPS {#UPSNAME} Charge < 40%'
+                  priority: DISASTER
+                -
+                  uuid: 914901e5f66244d2b4d0313b02f31925
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},battery.charge])<90'
+                  name: 'UPS {#UPSNAME} Charge < 90%'
+                  priority: HIGH
+            -
+              uuid: 9aae5ee128fd43c1b150195d191a8552
+              name: 'UPS {#UPSNAME} Battery Voltage'
+              key: 'upsmon[{#UPSNAME},battery.voltage]'
+              delay: '10'
+              value_type: FLOAT
+              units: Volts
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+            -
+              uuid: 3b8ad82e3c7c458281c3cd3e8fe5c605
+              name: 'UPS {#UPSNAME} Input Frequency'
+              key: 'upsmon[{#UPSNAME},input.frequency]'
+              delay: '30'
+              value_type: FLOAT
+              units: Hz
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+            -
+              uuid: 077680a689094d65a8e7982768b5018e
+              name: 'UPS {#UPSNAME} Input Voltage'
+              key: 'upsmon[{#UPSNAME},input.voltage]'
+              delay: '30'
+              value_type: FLOAT
+              units: Volts
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+            -
+              uuid: 68d44e57a2684e9281ede41e6232e2a2
+              name: 'UPS {#UPSNAME} Output Voltage'
+              key: 'upsmon[{#UPSNAME},output.voltage]'
+              delay: '30'
+              value_type: FLOAT
+              units: Volts
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+            -
+              uuid: 02884c4829be49618bad947865e49ad3
+              name: 'UPS {#UPSNAME} Load'
+              key: 'upsmon[{#UPSNAME},ups.load]'
+              delay: '10'
+              value_type: FLOAT
+              units: '%'
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+            -
+              uuid: 5d4e30f7c56948eb8338986633444da9
+              name: 'UPS {#UPSNAME} Status'
+              key: 'upsmon[{#UPSNAME},ups.status]'
+              delay: '10'
+              valuemap:
+                name: 'UPS Battery Status'
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+              trigger_prototypes:
+                -
+                  uuid: 9f4abaee0479435bbb798b0ee9c90913
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=5'
+                  name: 'UPS {#UPSNAME} Status - Battery is charging'
+                  priority: INFO
+                  description: 'The battery is charging'
+                -
+                  uuid: c7aae07f67cc4bebb2856096814fc3ff
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=11'
+                  name: 'UPS {#UPSNAME} Status - Boosting incoming voltage'
+                  priority: HIGH
+                  description: 'UPS is boosting incoming voltage'
+                -
+                  uuid: 57b77962eaaf40e2865c561ce487fcce
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=7'
+                  name: 'UPS {#UPSNAME} Status - Bypass'
+                  priority: DISASTER
+                  description: 'UPS bypass circuit is active echo no battery protection is available'
+                -
+                  uuid: 8e9f5e101b9e456c86889fb52ec8ea9e
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=8'
+                  name: 'UPS {#UPSNAME} Status - Calibration'
+                  priority: INFO
+                  description: 'UPS is currently performing runtime calibration (on battery)'
+                -
+                  uuid: c75cd90be32644f188e8702cc3f66539
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=3'
+                  name: 'UPS {#UPSNAME} Status - Low battery'
+                  priority: DISASTER
+                  description: 'Low battery'
+                -
+                  uuid: 44629a8b50ae495b8a4f1e247a188b9c
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=9'
+                  name: 'UPS {#UPSNAME} Status - Offline'
+                  priority: DISASTER
+                  description: 'UPS is offline and is not supplying power to the load'
+                -
+                  uuid: 5e5c975d420e46b697d763dc2555ece5
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=2'
+                  name: 'UPS {#UPSNAME} Status - On battery'
+                  priority: HIGH
+                  description: 'On battery (mains is not present)'
+                -
+                  uuid: bc6707e00297449b824bf57bbfc85b02
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=10'
+                  name: 'UPS {#UPSNAME} Status - Overloaded'
+                  priority: DISASTER
+                  description: 'UPS is overloaded'
+                -
+                  uuid: 7feffcefb78e4bd48ec2ba28db0a35ae
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=11'
+                  name: 'UPS {#UPSNAME} Status - Trimming incoming voltage'
+                  priority: HIGH
+                  description: 'UPS is trimming incoming voltage (called "buck" in some hardware)'
+                -
+                  uuid: f364980a59fa42d794ab5748959069e8
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.status])=0'
+                  name: 'UPS {#UPSNAME} Status - Unknown state'
+                  priority: DISASTER
+                  description: 'Unknown state'
+            -
+              uuid: 07adabb5f9054684a48e8be725635a25
+              name: 'UPS {#UPSNAME} Temperature'
+              key: 'upsmon[{#UPSNAME},ups.temperature]'
+              delay: '10'
+              value_type: FLOAT
+              units: °C
+              tags:
+                -
+                  tag: Application
+                  value: UPS
+              trigger_prototypes:
+                -
+                  uuid: 7f6cc36aed644a3cb82eaa55b961ad23
+                  expression: 'last(/UPS/upsmon[{#UPSNAME},ups.temperature])>28'
+                  name: 'UPS {#UPSNAME} Temperature'
+                  priority: HIGH
+                  type: MULTIPLE
+          graph_prototypes:
+            -
+              uuid: 041fad3441ab451bae739a0fd01dddea
+              name: 'UPS {#UPSNAME} Charge'
+              ymin_type_1: FIXED
+              ymax_type_1: FIXED
+              graph_items:
+                -
+                  color: C80000
+                  item:
+                    host: UPS
+                    key: 'upsmon[{#UPSNAME},battery.charge]'
+            -
+              uuid: ff2acdf0dcf34acda6e4b3ac751b46a4
+              name: 'UPS {#UPSNAME} Frequency'
+              graph_items:
+                -
+                  color: C80000
+                  item:
+                    host: UPS
+                    key: 'upsmon[{#UPSNAME},input.frequency]'
+            -
+              uuid: 05028a3799f7411caf5acd5432793ab8
+              name: 'UPS {#UPSNAME} Load'
+              ymin_type_1: FIXED
+              ymax_type_1: FIXED
+              graph_items:
+                -
+                  color: C80000
+                  item:
+                    host: UPS
+                    key: 'upsmon[{#UPSNAME},ups.load]'
+            -
+              uuid: 9e31e23af6584796a880c3573e65b34d
+              name: 'UPS {#UPSNAME} Temperature'
+              graph_items:
+                -
+                  color: C80000
+                  item:
+                    host: UPS
+                    key: 'upsmon[{#UPSNAME},ups.temperature]'
+            -
+              uuid: c2447259055f43d79200c78c1af28c7a
+              name: 'UPS {#UPSNAME} Voltage'
+              graph_items:
+                -
+                  color: C80000
+                  item:
+                    host: UPS
+                    key: 'upsmon[{#UPSNAME},input.voltage]'
+                -
+                  sortorder: '1'
+                  color: 00C800
+                  item:
+                    host: UPS
+                    key: 'upsmon[{#UPSNAME},output.voltage]'
+      valuemaps:
+        -
+          uuid: ed999e29eea042af8c8695aaee548f9a
+          name: 'UPS Battery Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: 'unknown state'
+            -
+              value: '1'
+              newvalue: 'On line (mains is present)'
+            -
+              value: '2'
+              newvalue: 'On battery (mains is not present)'
+            -
+              value: '3'
+              newvalue: 'Low battery'
+            -
+              value: '4'
+              newvalue: 'The battery needs to be replaced'
+            -
+              value: '5'
+              newvalue: 'The battery is charging'
+            -
+              value: '6'
+              newvalue: 'The battery is discharging (inverter is providing load power)'
+            -
+              value: '7'
+              newvalue: 'UPS bypass circuit is active echo no battery protection is avail'
+            -
+              value: '8'
+              newvalue: 'UPS is currently performing runtime calibration (on battery)'
+            -
+              value: '9'
+              newvalue: 'UPS is offline and is not supplying power to the load'
+            -
+              value: '10'
+              newvalue: 'UPS is overloaded'
+            -
+              value: '11'
+              newvalue: 'UPS is trimming incoming voltage (called "buck" in some hardware'
+            -
+              value: '12'
+              newvalue: 'UPS is boosting incoming voltage'
